@@ -16,12 +16,12 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Objects;
 import me.tsukanov.counter.CounterApplication;
 import me.tsukanov.counter.R;
-import me.tsukanov.counter.activities.MainActivity;
+import me.tsukanov.counter.activities.CountersActivity;
 import me.tsukanov.counter.domain.IntegerCounter;
 import me.tsukanov.counter.domain.exception.CounterException;
 import me.tsukanov.counter.infrastructure.BroadcastHelper;
 import me.tsukanov.counter.repository.CounterStorage;
-import me.tsukanov.counter.view.CounterFragment;
+import me.tsukanov.counter.view.counters.CounterFragment;
 
 public class EditDialog extends DialogFragment {
 
@@ -42,12 +42,12 @@ public class EditDialog extends DialogFragment {
 
   @NonNull
   @Override
-  public Dialog onCreateDialog(Bundle savedInstanceState) {
+  public Dialog onCreateDialog(final Bundle savedInstanceState) {
 
     final String oldName = requireArguments().getString(BUNDLE_ARGUMENT_NAME);
     final int oldValue = requireArguments().getInt(BUNDLE_ARGUMENT_VALUE);
 
-    final MainActivity activity = (MainActivity) getActivity();
+    final CountersActivity activity = (CountersActivity) getActivity();
 
     final View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_edit, null);
 

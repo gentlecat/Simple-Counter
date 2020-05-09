@@ -1,4 +1,4 @@
-package me.tsukanov.counter.view;
+package me.tsukanov.counter.view.counters;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import me.tsukanov.counter.R;
-import me.tsukanov.counter.domain.Counter;
 import me.tsukanov.counter.domain.IntegerCounter;
 
 class CountersListAdapter extends ArrayAdapter<IntegerCounter> {

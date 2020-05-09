@@ -1,4 +1,4 @@
-package me.tsukanov.counter.view;
+package me.tsukanov.counter.view.counters;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;

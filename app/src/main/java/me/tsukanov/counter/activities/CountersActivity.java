@@ -20,8 +20,13 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
+import java.util.Objects;
 import me.tsukanov.counter.CounterApplication;
 import me.tsukanov.counter.R;
 import me.tsukanov.counter.SharedPrefKeys;
@@ -30,13 +35,14 @@ import me.tsukanov.counter.infrastructure.Actions;
 import me.tsukanov.counter.infrastructure.BroadcastHelper;
 import me.tsukanov.counter.repository.CounterStorage;
 import me.tsukanov.counter.repository.exceptions.MissingCounterException;
-import me.tsukanov.counter.view.CounterFragment;
-import me.tsukanov.counter.view.CountersListFragment;
 import me.tsukanov.counter.view.Themes;
+import me.tsukanov.counter.view.counters.CounterFragment;
+import me.tsukanov.counter.view.counters.CountersListFragment;
+import me.tsukanov.counter.view.counters.ZoomOutPageTransformer;
 
-public class MainActivity extends AppCompatActivity {
+public class CountersActivity extends AppCompatActivity {
 
-  private static final String TAG = MainActivity.class.getSimpleName();
+  private static final String TAG = CountersActivity.class.getSimpleName();
 
   private ActionBar actionBar;
   private DrawerLayout navigationLayout;
@@ -45,6 +51,35 @@ public class MainActivity extends AppCompatActivity {
   private FrameLayout menuFrame;
   private String selectedCounterName;
   private CounterFragment selectedCounterFragment;
+  private ViewPager2 viewPager;
+
+  // TODO: Move this class out
+  private class ScreenSlidePagerAdapter extends FragmentStateAdapter {
+
+    public ScreenSlidePagerAdapter(@NonNull final FragmentActivity fa) {
+      super(fa);
+    }
+
+    @Override
+    @NonNull
+    public Fragment createFragment(int position) {
+
+      // TODO: Figure out how to retrieve current counter properly
+
+      final Bundle bundle = new Bundle();
+      bundle.putString(CounterFragment.COUNTER_NAME_ATTRIBUTE, findActiveCounter().getName());
+
+      selectedCounterFragment = new CounterFragment();
+      selectedCounterFragment.setArguments(bundle);
+
+      return selectedCounterFragment;
+    }
+
+    @Override
+    public int getItemCount() {
+      return totalNumberOfCounters();
+    }
+  }
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
@@ -59,7 +94,11 @@ public class MainActivity extends AppCompatActivity {
     actionBar.setDisplayHomeAsUpEnabled(true);
     actionBar.setHomeButtonEnabled(true);
 
-    setContentView(R.layout.drawer_layout);
+    setContentView(R.layout.counters_layout);
+
+    viewPager = findViewById(R.id.pager);
+    viewPager.setAdapter(new ScreenSlidePagerAdapter(this));
+    viewPager.setPageTransformer(new ZoomOutPageTransformer());
 
     navigationLayout = findViewById(R.id.drawer_layout);
     navigationToggle = generateActionBarToggle(this.actionBar, navigationLayout);
@@ -118,17 +157,19 @@ public class MainActivity extends AppCompatActivity {
   private void switchCounter(@NonNull final String counterName) {
     this.selectedCounterName = counterName;
 
-    final Bundle bundle = new Bundle();
-    bundle.putString(CounterFragment.COUNTER_NAME_ATTRIBUTE, counterName);
+    // TODO: Implement switching
 
-    selectedCounterFragment = new CounterFragment();
-    selectedCounterFragment.setArguments(bundle);
-    getSupportFragmentManager()
-        .beginTransaction()
-        .replace(R.id.content_frame, selectedCounterFragment)
-        .commitAllowingStateLoss();
-
-    actionBar.setTitle(counterName);
+    //    final Bundle bundle = new Bundle();
+    //    bundle.putString(CounterFragment.COUNTER_NAME_ATTRIBUTE, counterName);
+    //
+    //    selectedCounterFragment = new CounterFragment();
+    //    selectedCounterFragment.setArguments(bundle);
+    //    getSupportFragmentManager()
+    //        .beginTransaction()
+    //        .replace(R.id.content_frame, selectedCounterFragment)
+    //        .commitAllowingStateLoss();
+    //
+    //    actionBar.setTitle(counterName);
 
     if (isNavigationOpen()) closeNavigation();
   }
@@ -157,6 +198,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     return storage.readAll(true).get(0);
+  }
+
+  private int totalNumberOfCounters() {
+    return CounterApplication.getComponent().localStorage().readAll(true).size();
   }
 
   @Override
@@ -228,11 +273,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onReceive(Context context, Intent intent) {
       final String counterName = intent.getStringExtra(BroadcastHelper.EXTRA_COUNTER_NAME);
-      Log.d(
+      Log.w(
           TAG,
           String.format(
               "Received counter change broadcast. Switching to counter \"%s\"", counterName));
       switchCounter(counterName);
+
+      Objects.requireNonNull(viewPager.getAdapter()).notifyDataSetChanged();
     }
   }
 }

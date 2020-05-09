@@ -18,7 +18,7 @@ import java.io.IOException;
 import me.tsukanov.counter.CounterApplication;
 import me.tsukanov.counter.R;
 import me.tsukanov.counter.SharedPrefKeys;
-import me.tsukanov.counter.view.SettingsFragment;
+import me.tsukanov.counter.view.settings.SettingsFragment;
 import me.tsukanov.counter.view.Themes;
 
 public class SettingsActivity extends AppCompatActivity

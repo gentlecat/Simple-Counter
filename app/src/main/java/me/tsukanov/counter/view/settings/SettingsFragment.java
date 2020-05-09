@@ -1,4 +1,4 @@
-package me.tsukanov.counter.view;
+package me.tsukanov.counter.view.settings;
 
 import static me.tsukanov.counter.activities.SettingsActivity.KEY_EXPORT_COUNTERS;
 import static me.tsukanov.counter.activities.SettingsActivity.KEY_REMOVE_COUNTERS;

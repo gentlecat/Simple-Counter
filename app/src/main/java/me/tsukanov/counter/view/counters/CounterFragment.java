@@ -1,4 +1,4 @@
-package me.tsukanov.counter.view;
+package me.tsukanov.counter.view.counters;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -26,7 +26,7 @@ import java.util.Objects;
 import me.tsukanov.counter.CounterApplication;
 import me.tsukanov.counter.R;
 import me.tsukanov.counter.SharedPrefKeys;
-import me.tsukanov.counter.activities.MainActivity;
+import me.tsukanov.counter.activities.CountersActivity;
 import me.tsukanov.counter.domain.IntegerCounter;
 import me.tsukanov.counter.repository.CounterStorage;
 import me.tsukanov.counter.repository.exceptions.MissingCounterException;
@@ -148,7 +148,7 @@ public class CounterFragment extends Fragment {
 
   @Override
   public void onPrepareOptionsMenu(@NonNull final Menu menu) {
-    boolean isDrawerOpen = ((MainActivity) requireActivity()).isNavigationOpen();
+    boolean isDrawerOpen = ((CountersActivity) requireActivity()).isNavigationOpen();
 
     MenuItem editItem = menu.findItem(R.id.menu_edit);
     editItem.setVisible(!isDrawerOpen);
